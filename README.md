@@ -22,11 +22,6 @@ To run this project locally, install the dependencies and run the local server:
 
 ```shell
 npm install
-npm run typesenseServer
-
-ln -s .env.development .env
-
-npm run indexer
 
 npm start
 ```
