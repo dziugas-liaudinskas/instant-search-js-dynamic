@@ -19,6 +19,9 @@ import {
   hitsPerPage,
   clearRefinements,
   breadcrumb,
+  dynamicWidgets,
+  panel,
+  menu,
 } from 'instantsearch.js/es/widgets';
 import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
 
@@ -120,73 +123,39 @@ search.addWidgets([
       selectedItem: 'fw-bold text-primary',
     },
   }),
-  refinementList({
-    limit: 10,
-    showMoreLimit: 50,
-    container: '#brand-list',
-    attribute: 'brand',
-    searchable: true,
-    searchablePlaceholder: 'Search brands',
-    showMore: true,
-    sortBy: ['name:asc', 'count:desc'],
-    cssClasses: {
-      searchableInput:
-        'form-control form-control-sm form-control-secondary mb-2 border-light-2',
-      searchableSubmit: 'd-none',
-      searchableReset: 'd-none',
-      showMore: 'btn btn-secondary btn-sm',
-      list: 'list-unstyled',
-      count: 'badge text-dark-2 ms-2',
-      label: 'd-flex align-items-center',
-      checkbox: 'me-2',
-    },
-  }),
-  hierarchicalMenu({
-    container: '#categories-hierarchical-menu',
-    showParentLevel: true,
-    rootPath: 'Cell Phones',
-    attributes: [
-      'categories.lvl0',
-      'categories.lvl1',
-      'categories.lvl2',
-      'categories.lvl3',
+  dynamicWidgets({
+    container: '#dynamic-widgets',
+    facets: ['*'],
+    widgets: [
+      (container) =>
+        refinementList({ container, attribute: 'brand'}),
     ],
-    cssClasses: {
-      showMore: 'btn btn-secondary btn-sm',
-      list: 'list-unstyled',
-      childList: 'ms-4',
-      count: 'badge text-dark-2 ms-2',
-      link: 'text-dark text-decoration-none',
-      selectedItem: 'text-primary fw-bold',
-      parentItem: 'text-dark fw-bold',
-    },
-  }),
-  toggleRefinement({
-    container: '#toggle-refinement',
-    attribute: 'free_shipping',
-    templates: {
-      labelText: 'Free shipping',
-    },
-    cssClasses: {
-      label: 'd-flex align-items-center',
-      checkbox: 'me-2',
-    },
-  }),
-  rangeSlider({
-    container: '#price-range-slider',
-    attribute: 'price',
-  }),
-  ratingMenu({
-    container: '#rating-menu',
-    attribute: 'rating',
-    cssClasses: {
-      list: 'list-unstyled',
-      link: 'text-decoration-none',
-      starIcon: '',
-      count: 'badge text-dark-2 ms-2',
-      disabledItem: 'text-muted',
-      selectedItem: 'fw-bold text-primary',
-    },
+    fallbackWidget: ({ container, attribute }) => {
+      if (attribute === 'price') {
+       return rangeSlider({
+         container: '#price-range-slider',
+         attribute: 'price',
+       });
+      }
+      if (attribute === 'rating') {
+        return ratingMenu({
+          container: '#rating-menu',
+          attribute: 'rating',
+          max: 6,
+          cssClasses: {
+            list: 'list-unstyled',
+            link: 'text-decoration-none',
+            starIcon: '',
+            count: 'badge text-dark-2 ms-2',
+            disabledItem: 'text-muted',
+            selectedItem: 'fw-bold text-primary',
+          },
+        });
+      }
+      return panel({ templates: { header: attribute } })(
+        menu
+      )({ container, attribute });
+    }
   }),
   sortBy({
     container: '#sort-by',
