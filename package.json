@@ -29,6 +29,6 @@
     "instantsearch.js": "^4.49.3",
     "lodash": "^4.17.21",
     "typesense": "^1.5.4",
-    "typesense-instantsearch-adapter": "^2.7.0"
+    "typesense-instantsearch-adapter": "^2.7.1-0"
   }
 }
